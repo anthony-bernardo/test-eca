@@ -1,0 +1,351 @@
+[
+  {
+    "type": "eca-stepper",
+    "fieldGroup": [
+      {
+        "props": {
+          "label": "Où et quand le sinistre est-il survenu?"
+        },
+        "wrappers": ["eca-wrapper"],
+        "fieldGroup": [
+          {
+            "key": "sinister.date",
+            "type": "eca-date",
+            "props": {
+              "required": true,
+              "label": "Date",
+              "maxDate": "today"
+            }
+          },
+          {
+            "key": "sinister.location.isAbroad",
+            "type": "checkbox",
+            "props": {
+              "label": "Lieu de sinistre à l'étranger ?",
+              "indeterminate": false
+            }
+          },
+          {
+            "key": "sinister.location.address",
+            "type": "eca-address-ch-block",
+            "props": {
+              "label": "Lieu de sinistre",
+              "required": true
+            },
+            "expressions": {
+              "hide": "model?.sinister?.location?.isAbroad"
+            }
+          },
+          {
+            "key": "sinister.location.address",
+            "type": "eca-address-block",
+            "props": {
+              "label": "Lieu de sinistre",
+              "required": true
+            },
+            "expressions": {
+              "hide": "!model?.sinister?.location?.isAbroad"
+            }
+          },
+          {
+            "key": "sinister.isPersonPresent",
+            "type": "eca-choice",
+            "props": {
+              "required": true,
+              "label": "Etiez-vous présent-e-(s) au moment du sinistre ?",
+              "options": [
+                {
+                  "label": "Oui",
+                  "value": true
+                },
+                {
+                  "label": "Non",
+                  "value": false
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "props": {
+          "label": "Quelle est la cause du sinistre ?"
+        },
+        "wrappers": ["eca-wrapper"],
+        "fieldGroup": [
+          {
+            "key": "sinister.cause.natureId",
+            "type": "eca-choice",
+            "props": {
+              "label": "Nature du sinistre",
+              "required": true
+            }
+          },
+          {
+            "key": "sinister.cause.causeId",
+            "type": "eca-choice",
+            "props": {
+              "label": "Type de dommage",
+              "required": true
+            },
+            "expressions": {
+              "hide": "!model.sinister?.cause?.natureId"
+            }
+          },
+          {
+            "key": "sinister.cause.description",
+            "type": "textarea",
+            "props": {
+              "label": "Description du sinistre",
+              "required": true
+            }
+          }
+        ]
+      },
+      {
+        "props": {
+          "label": "Quelle police d’assurance est concernée par le sinistre ?"
+        },
+        "wrappers": ["eca-wrapper"],
+        "fieldGroup": [
+          {
+            "key": "police.insuranceProductId",
+            "type": "eca-choice",
+            "props": {
+              "label": "Type de police",
+              "required": true
+            }
+          },
+          {
+            "key": "police.number",
+            "type": "eca-police-number",
+            "props": {
+              "required": true
+            }
+          }
+        ]
+      },
+      {
+        "props": {
+          "label": "Le dommage est-il réparé ?"
+        },
+        "wrappers": ["eca-wrapper"],
+        "fieldGroup": [
+          {
+            "key": "sinister.damage.repairDone",
+            "type": "eca-choice",
+            "props": {
+              "label": "Reparé ?",
+              "required": true,
+              "options": [
+                {
+                  "label": "Oui",
+                  "value": true
+                },
+                {
+                  "label": "Non",
+                  "value": false
+                }
+              ]
+            }
+          },
+          {
+            "key": "sinister.damage.repairAmount",
+            "type": "input",
+            "props": {
+              "label": "Quel est le montant du dommage ?"
+            },
+            "expressions": {
+              "hide": "!model.sinister?.damage || model.sinister?.damage.repairDone === false"
+            }
+          },
+          {
+            "key": "sinister.damage.repairEstimatedAmount",
+            "type": "select",
+            "props": {
+              "label": "A combien estimez-vous le dommage ?",
+              "options": [
+                { "label": "Entre CHF 0.- et 2'000.-", "value": "0-2000" },
+                {
+                  "label": "Entre CHF 2'001.- et 10'000.-",
+                  "value": "2001-10000"
+                },
+                {
+                  "label": "Entre CHF 10'001.- et 50'000.-",
+                  "value": "10001-50000"
+                },
+                { "label": "> CHF 50'001.-", "value": "50001+" }
+              ]
+            },
+            "expressions": {
+              "hide": "!model.sinister?.damage || model.sinister?.damage?.repairDone === true"
+            }
+          },
+          {
+            "key": "sinister.damage.documents",
+            "type": "eca-repeat",
+            "props": {
+              "addLabel": "Ajouter un document",
+              "label": "Ajouter un devis ou une facture"
+            },
+            "fieldArray": {
+              "fieldGroup": [
+                {
+                  "type": "eca-choice",
+                  "key": "type",
+                  "props": {
+                    "placeholder": "Facture ou devis ?",
+                    "required": true,
+                    "options": [
+                      { "label": "Facture", "value": "invoice" },
+                      { "label": "Devis", "value": "estimate" }
+                    ]
+                  }
+                },
+                {
+                  "type": "select",
+                  "key": "rubric",
+                  "props": {
+                    "placeholder": "Séléctionnez une rubrique",
+                    "required": true,
+                    "options": [
+                      { "label": "Caravane", "value": "Caravane" },
+                      { "label": "Remorques", "value": "Remorques" },
+                      { "label": "Panneau solaire", "value": "Panneau solaire" }
+                    ]
+                  }
+                },
+                {
+                  "type": "number",
+                  "key": "amount",
+                  "props": {
+                    "placeholder": "Montant",
+                    "required": true
+                  }
+                },
+                {
+                  "type": "eca-file",
+                  "key": "file",
+                  "props": {
+                    "placeholder": "Fichier",
+                    "required": true,
+                    "multiple": false
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "props": {
+          "label": "Informations sur le preneur d’assurance",
+          "variant": "card"
+        },
+        "wrappers": ["eca-wrapper"],
+        "fieldGroup": [
+          {
+            "key": "client.type",
+            "type": "eca-choice",
+            "props": {
+              "label": "Type de client",
+              "required": true,
+              "options": [
+                {
+                  "label": "Particulier",
+                  "value": "Particulier",
+                  "iconSrc": "/assets/icons/house.svg"
+                },
+                {
+                  "label": "Entreprise",
+                  "value": "Entreprise",
+                  "iconSrc": "/assets/icons/building.svg"
+                }
+              ]
+            }
+          },
+          {
+            "key": "client.gender",
+            "type": "eca-choice",
+            "props": {
+              "label": "Civilité",
+              "required": true,
+              "options": [
+                { "label": "Monsieur", "value": "Monsieur" },
+                { "label": "Madame", "value": "Madame" }
+              ]
+            }
+          },
+          {
+            "key": "client.firstname",
+            "type": "input",
+            "props": {
+              "label": "Prénom",
+              "required": true
+            },
+            "expressions": {
+              "hide": "model.client?.type !== 'Particulier'"
+            }
+          },
+          {
+            "key": "client.lastname",
+            "type": "input",
+            "props": {
+              "label": "Nom",
+              "required": true
+            },
+            "expressions": {
+              "hide": "model.client?.type !== 'Particulier'"
+            }
+          },
+          {
+            "key": "client.companyName",
+            "type": "input",
+            "props": {
+              "label": "Raison sociale",
+              "required": true
+            },
+            "expressions": {
+              "hide": "model.client?.type !== 'Entreprise'"
+            }
+          },
+          {
+            "key": "client.identifier",
+            "type": "eca-client-number",
+            "props": {
+              "label": "Numéro de client",
+              "required": true
+            }
+          },
+          {
+            "key": "client.phone",
+            "type": "eca-phone",
+            "props": {
+              "label": "Téléphone principal",
+              "required": true
+            }
+          },
+          {
+            "key": "client.email",
+            "type": "input",
+            "props": {
+              "label": "E-mail",
+              "required": true
+            },
+            "expressions": {
+              "hide": "model.client?.type !== 'Particulier'"
+            }
+          },
+          {
+            "key": "signature",
+            "type": "eca-signature",
+            "props": {
+              "label": "Signature",
+              "required": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
