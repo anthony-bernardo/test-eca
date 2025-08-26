@@ -4,7 +4,7 @@
     "fieldGroup": [
       {
         "props": {
-          "label": "Où et quand le sinistre est-il survenu =D"
+          "label": "Où et quand le sinistre est-il survenu =D =)"
         },
         "wrappers": ["eca-wrapper"],
         "fieldGroup": [
